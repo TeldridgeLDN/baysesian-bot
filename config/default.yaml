@@ -1,0 +1,108 @@
+# Default Configuration for Bayesian Crypto Trading Bot
+
+trading:
+  max_position_size: 0.10          # 10% of capital
+  confidence_threshold: 0.60       # Minimum confidence for trades
+  stop_loss_multiplier: 2.0        # Stop loss = prediction - (2 × std)
+  take_profit_ratio: 1.5           # Risk-reward ratio
+  max_drawdown: 0.10              # 10% maximum drawdown
+  position_timeout_hours: 24       # Auto-close inactive positions
+  min_price_change_pct: 2.0        # Minimum price change for signal
+  max_interval_width_pct: 3.0      # Maximum uncertainty width
+  max_active_positions_pct: 0.30   # Maximum 30% capital in positions
+  paper_trading: true              # Start in paper trading mode
+
+model:
+  sequence_length: 60              # Input sequence length (hours)
+  retrain_frequency_hours: 24      # Model retraining interval
+  monte_carlo_samples: 100         # Uncertainty estimation samples
+  confidence_interval: 0.95        # Prediction interval confidence
+  lstm_units: [128, 64, 32]       # LSTM layer units
+  dropout_rate: 0.2               # Dropout rate for regularization
+  recurrent_dropout_rate: 0.2     # Recurrent dropout rate
+  dense_dropout_rate: 0.3         # Dense layer dropout rate
+  learning_rate: 0.001            # Initial learning rate
+  batch_size: 32                  # Training batch size
+  epochs: 100                     # Maximum training epochs
+  early_stopping_patience: 10     # Early stopping patience
+  validation_split: 0.2           # Validation data split
+
+data:
+  historical_days: 180             # Training data window
+  update_frequency_minutes: 60     # Data fetch interval
+  backup_retention_days: 30        # Database backup retention
+  price_data_sources:
+    primary: "coingecko"          # Primary data source
+    backup: "binance"             # Backup data source
+  features:
+    - "open"
+    - "high" 
+    - "low"
+    - "close"
+    - "volume"
+    - "rsi"
+    - "macd"
+    - "bollinger_bands"
+  data_validation:
+    max_price_change_pct: 20.0    # Maximum allowed price change
+    min_volume_threshold: 1000    # Minimum volume threshold
+
+telegram:
+  notification_level: "normal"     # "minimal", "normal", "verbose"
+  chart_resolution: "1h"          # Chart timeframe
+  max_message_length: 4000        # Telegram message limit
+  notification_types:
+    trade_entry: true
+    trade_exit: true
+    high_confidence: true
+    model_retrained: true
+    risk_alert: true
+    daily_summary: true
+  chart_indicators:
+    - "price"
+    - "predictions"
+    - "confidence_bands"
+    - "volume"
+
+database:
+  db_path: "data/trading_bot.db"   # SQLite database path
+  backup_path: "data/backups/"     # Backup directory
+  connection_timeout: 30           # Connection timeout seconds
+  max_retries: 3                  # Maximum retry attempts
+
+api:
+  coingecko:
+    base_url: "https://api.coingecko.com/api/v3"
+    rate_limit_per_minute: 100    # Free tier limit
+    timeout_seconds: 30
+    retry_attempts: 3
+    retry_delay: 1.0
+  binance:
+    base_url: "https://api.binance.com/api/v3"
+    rate_limit_per_minute: 1200   # Rate limit
+    timeout_seconds: 30
+    retry_attempts: 3
+    retry_delay: 1.0
+
+logging:
+  level: "INFO"                   # Logging level
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  log_file: "logs/trading_bot.log"
+  max_file_size: 10485760        # 10MB
+  backup_count: 5
+  console_output: true
+
+security:
+  encrypt_database: false         # Database encryption (future)
+  api_key_encryption: true       # Encrypt stored API keys
+  session_timeout_minutes: 60    # User session timeout
+  max_login_attempts: 3          # Maximum login attempts
+
+monitoring:
+  health_check_interval: 300     # Health check interval (seconds)
+  performance_log_interval: 3600 # Performance logging interval
+  alert_thresholds:
+    max_memory_mb: 2048          # Maximum memory usage
+    max_cpu_percent: 80          # Maximum CPU usage
+    min_disk_space_gb: 5         # Minimum disk space
+    max_api_errors_per_hour: 10  # Maximum API errors 

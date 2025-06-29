@@ -1,0 +1,105 @@
+trading:
+  paper_trading: true
+  max_position_size: 0.10
+  confidence_threshold: 0.40
+  stop_loss_multiplier: 2.0
+  take_profit_ratio: 1.5
+  max_drawdown: 0.15
+  position_timeout_hours: 24
+  min_price_change_pct: 1.2
+  max_interval_width_pct: 20.0
+  max_active_positions_pct: 0.30
+  historical_days: 180
+  trading_fee: 0.001
+  slippage: 0.0002
+  risk_grading_enabled: true
+  adaptive_parameters: true
+
+model:
+  sequence_length: 60
+  retrain_frequency_hours: 24
+  monte_carlo_samples: 100
+  confidence_interval: 0.95
+  lstm_units: [128, 64, 32]
+  dropout_rate: 0.2
+  recurrent_dropout_rate: 0.2
+  dense_dropout_rate: 0.3
+  learning_rate: 0.001
+  batch_size: 32
+  epochs: 100
+  early_stopping_patience: 10
+  validation_split: 0.2
+
+data:
+  historical_days: 180
+  update_frequency_minutes: 60
+  backup_retention_days: 30
+  price_data_sources:
+    primary: "binance"
+    backup: "coingecko"
+  features: ["open", "high", "low", "close", "volume"]
+  data_validation:
+    max_price_change_pct: 20.0
+    min_volume_threshold: 1000
+
+telegram:
+  notification_level: "normal"
+  chart_resolution: "1h"
+  max_message_length: 4000
+  notification_types:
+    trade_entry: true
+    trade_exit: true
+    high_confidence: true
+    model_retrained: true
+    risk_alert: true
+    daily_summary: true
+    parameter_adjustments: true
+  chart_indicators: ["price", "predictions", "confidence_bands", "volume"]
+
+database:
+  db_path: "data/trading_bot.db"
+  backup_path: "data/backups/"
+  connection_timeout: 30
+  max_retries: 3
+
+api:
+  binance:
+    name: "binance"
+    base_url: "https://api.binance.com"
+    rate_limit_per_minute: 1200
+    timeout_seconds: 30
+  coingecko:
+    name: "coingecko"
+    base_url: "https://api.coingecko.com/api/v3"
+    rate_limit_per_minute: 50
+    timeout_seconds: 30
+
+logging:
+  level: "INFO"
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  log_file: "logs/trading_bot.log"
+  max_file_size: 10485760
+  backup_count: 5
+  console_output: true
+
+security:
+  encrypt_database: false
+  api_key_encryption: true
+  session_timeout_minutes: 60
+  max_login_attempts: 3
+
+monitoring:
+  health_check_interval: 300
+  performance_log_interval: 3600
+  alert_thresholds:
+    max_memory_mb: 2048
+    max_cpu_percent: 80
+    min_disk_space_gb: 5
+    max_api_errors_per_hour: 10
+    min_win_rate_pct: 40.0
+    max_drawdown_pct: 15.0
+    min_confidence_avg: 0.30
+    max_uncertainty_avg: 25.0
+    min_trades_per_day: 0.5
+    max_trades_per_day: 10.0
+    parameter_drift_threshold: 0.20
